@@ -1,0 +1,154 @@
+rule all:
+    input:
+        "consensus_output/cleaned_consensus_msa_consensus.fasta",
+        "final_msa/cleaned_truncated_msa_cleaned.fasta",
+        "asr/tree.nwk",
+        "asr/asr.fas"
+
+
+
+
+rule generate_sequences:
+    output:
+        "consensus_blast/filtered_sequences.fas",
+        "consensus_blast/blast.xml",
+        "consensus_blast/unfiltered_sequences.fas"
+    script:
+        "consensus/consensus.py"
+
+
+
+rule generate_msa:
+    input:
+        "consensus_blast/filtered_sequences.fas"
+    output:
+        "consensus_output/consensus_msa"
+    shell:
+        '''
+        ginsi {input} > {output}
+        '''
+
+
+
+rule generate_clean_msa:
+    input:
+        "consensus_output/consensus_msa"
+    output:
+        "consensus_output/cleaned_consensus_msa_consensus.fasta"
+    shell:
+        '''
+        CIAlign --infile {input} --outfile_stem consensus_output/cleaned_consensus_msa --remove_insertions --crop_ends --remove_short --keep_gaponly --make_consensus
+        '''
+
+
+
+rule generate_truncated_sequences:
+    output:
+        "truncate/truncated_sequences.fas",
+        "truncate/blast.xml",
+        "truncate/unfiltered_sequences.fas",
+        "truncate/filtered_sequences.fas",
+        "truncate/whole_sequence.fas"
+    script:
+        "truncate/truncate.py"
+
+
+
+rule generate_truncated_msa:
+    input:
+        "truncate/truncated_sequences.fas"
+    output:
+        "truncate/truncated_msa"
+    shell:
+        "ginsi {input} > {output}"
+
+
+
+rule generate_clean_truncated_msa:
+    input:
+        "truncate/truncated_msa"
+    output:
+        "final_msa/cleaned_truncated_msa_cleaned.fasta"
+    shell:
+        '''
+        CIAlign --infile {input} --outfile_stem final_msa/cleaned_truncated_msa --remove_insertions --crop_ends --remove_short --keep_gaponly
+        '''
+
+
+rule out_merge:
+    input:
+        "original_out.fasta",
+        "final_msa/cleaned_truncated_msa_cleaned.fasta"
+    output:
+        "final_msa/final_msa.fasta"
+    shell:
+        "cat {input[0]} {input[1]} > final_msa/new_msa.fasta | "
+        "ginsi final_msa/new_msa.fasta > {output}"
+
+rule generate_tree_asr:
+    input:
+        "final_msa/final_msa.fasta"
+    output:
+        "final_msa/final_msa.fasta.treefile",
+        "final_msa/final_msa.fasta.bionj",
+        "final_msa/final_msa.fasta.ckp.gz",
+        "final_msa/final_msa.fasta.contree",
+        "final_msa/final_msa.fasta.iqtree",
+        "final_msa/final_msa.fasta.log",
+        "final_msa/final_msa.fasta.mldist",
+        "final_msa/final_msa.fasta.model.gz",
+        "final_msa/final_msa.fasta.parstree",
+        "final_msa/final_msa.fasta.splits.nex",
+        "final_msa/final_msa.fasta.state",
+
+    shell:
+        '''
+        iqtree -s {input} -bb 1000 -asr -nt AUTO
+        '''
+
+
+
+
+rule generate_asr_fasta:
+    input:
+        "final_msa/final_msa.fasta.state"
+    output:
+        "asr/asr.fas"
+    run:
+        import numpy as np
+        import pandas as pd
+
+        df = pd.read_table(input[0], error_bad_lines=False)
+
+        with open(output[0], "w") as out:
+            node_n = ""
+            state_n = ""
+            for index, row in df.iterrows():
+                if row["Node"] != node_n:
+                    out.write("\n" + ">" + row["Node"] + "\n")
+                    if row["State"] != "-":
+                        out.write(row["State"])
+                    else:
+                        next
+                    node = row["Node"]
+                elif row["Node"] != node:
+                    if row["State"] != "-":
+                        out.write(row["State"] + "\n")
+                    else:
+                        next
+                elif row["Node"] == node:
+                    if row["State"] != "-":
+                        out.write(row["State"])
+                    else:
+                        next
+                node_n = row["Node"]
+
+
+
+rule generate_nwk_tree:
+    output:
+        "asr/tree.nwk"
+    input:
+        "final_msa/final_msa.fasta.treefile"
+    shell:
+        "cat {input} > {output}"
