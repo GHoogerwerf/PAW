@@ -1,0 +1,164 @@
+rule all:
+    input:
+        "merge.xlsx"
+
+
+
+rule generate_sequences:
+    output:
+        "blast_results/filtered_sequences_protein.fas",
+        "blast_results/filtered_sequences_coseq.fas"
+    script:
+        "script/co-blast.py"
+
+
+rule filter_blast:
+    input:
+        "blast_results/filtered_sequences_protein.fas",
+        "blast_results/filtered_sequences_coseq.fas"
+    output:
+        "coblast_results.fas"
+    run:
+        from Bio import SeqIO
+        from Bio.Seq import Seq
+
+        alignment_con = SeqIO.parse(open(input[0]), "fasta")
+
+        with open(output[0], "w+") as output_file:
+            for record in alignment_con:
+                alignment_co = SeqIO.parse(open(input[1]), "fasta")
+                x = record.description.split("[")
+                for recordy in alignment_co:
+                    y = recordy.description.split("[")
+                    if x[1] == y[1]:
+                        output_file.write(">" + str(recordy.description) + "\n" + str(recordy.seq) + "\n")
+                    else:
+                        next
+
+
+
+rule delete_metagenome:
+    input:
+        "coblast_results.fas"
+    output:
+        "coblast_results_final.fas"
+    run:
+        from Bio import SeqIO
+        from Bio import Entrez
+        import time
+        with open(output[0], "w+") as output:
+            try:
+
+                for record in SeqIO.parse(input[0], "fasta"):
+                    sp = record.id.split('|')
+                    if len(sp[2]) < 2:
+                        s = sp[0] + "|" + sp[1] + "|" + sp[2]
+                    else:
+                        s = sp[0] + "|" + sp[1]
+                    Entrez.email = "Your.Name.Here@example.org"
+                    handle = Entrez.efetch(db="protein", id=s, retmode="xml")
+                    bs = Entrez.read(handle)
+                    #seq = bs[0]["GBSeq_keywords"]
+                    meta = "metagenome_source"
+                    if meta in str(bs):
+                        next
+                    else:
+                        output.write(">" + str(record.description) + "\n" + str(record.seq) + "\n")
+                    time.sleep(2)
+            except:
+                pass
+
+
+
+
+rule generate_excel:
+    input:
+        "blast_results/filtered_sequences_protein.fas",
+        "blast_results/blast_coseq.xml",
+        "blast_results/blast_protein.xml",
+        "coblast_results_final.fas"
+    output:
+        "merge.xlsx",
+        "sequence1_result.xlsx",
+        "sequence2_result.xlsx"
+    run:
+        from Bio import SeqIO
+        from Bio import SearchIO
+        import pandas as pd
+
+        number = []
+        evalue = []
+        descript = []
+        c = 0
+        blast_qresult = SearchIO.read(input[1], "blast-xml")
+
+        for hit in blast_qresult:
+            for seq in SeqIO.parse(input[3], "fasta"):
+                if str(seq.description.split("|")[2]) in str(hit[0][0]):
+                    c+=1
+                    number.append(c)
+                    evalue.append(str(hit[0].evalue))
+                    descript.append(seq.description.split("|")[2])
+                else:
+                    next
+
+        number1 = []
+        evalue1 = []
+        descript1 = []
+        sequence_len1 = []
+        organism1 = []
+        accession1 = []
+        c = 0
+
+        for e, d, seq, n in zip(evalue, descript, SeqIO.parse(input[3], "fasta"), number):
+            evalue1.append(e)
+            descript1.append(d.split("[")[0])
+            sequence_len1.append(len(seq.seq))
+            organism1.append(d[:-1].split("[")[1])
+            accession1.append(seq.description.split("|")[1])
+            number1.append(n)
+
+        df2 = pd.DataFrame(list(zip(accession1, descript1, organism1, sequence_len1, evalue1)),
+                        columns =['Accession', 'Description', 'Organism', 'Sequence length', 'Evalue'])
+
+
+        number = []
+        evalue = []
+        descript = []
+        c = 0
+        blast_qresult = SearchIO.read(input[2], "blast-xml")
+
+        for hit in blast_qresult:
+            for seq in SeqIO.parse(input[0], "fasta"):
+                if str(seq.description.split("|")[2]) in str(hit[0][0]):
+                    c+=1
+                    number.append(c)
+                    evalue.append(str(hit[0].evalue))
+                    descript.append(seq.description.split("|")[2])
+                else:
+                    next
+
+        number1 = []
+        evalue1 = []
+        descript1 = []
+        sequence_len1 = []
+        organism1 = []
+        accession1 = []
+        c = 0
+
+        for e, d, seq, n in zip(evalue, descript, SeqIO.parse(input[0], "fasta"), number):
+            evalue1.append(e)
+            descript1.append(d.split("[")[0])
+            sequence_len1.append(len(seq.seq))
+            organism1.append(d[:-1].split("[")[1])
+            accession1.append(seq.description.split("|")[1])
+            number1.append(n)
+
+        df = pd.DataFrame(list(zip(accession1, descript1, organism1, sequence_len1, evalue1)),
+                        columns =['Accession', 'Description', 'Organism', 'Sequence length', 'Evalue'])
+
+
+        merged_df = pd.merge(df, df2, on="Organism")
+        merged_df.to_excel(output[0])
+        df.to_excel(output[1])
+        df2.to_excel(output[2])
