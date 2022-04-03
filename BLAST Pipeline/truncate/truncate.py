@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
 
 
 from Bio import AlignIO
@@ -14,10 +13,11 @@ from collections import Counter
 import time
 import sys
 
-
+# Main function creates input variables for other functions.
+# These variables include simgle protein sequence files in fasta format 
+# and the maximum and minimum amount of characters a sequence can have.
 def main():
-    #get_ipython().run_line_magic('matplotlib', 'auto')
-    record1 = SeqIO.read("protein.fasta", format="fasta")
+    record1 = SeqIO.read("protein.fasta", format="fasta")  
     record2 = SeqIO.read("consensus_output/cleaned_consensus_msa_consensus.fasta",
                         format="fasta")
     mini = len(record1.seq) - 25
@@ -30,9 +30,9 @@ def main():
 
 
 
-
+# blastSearch functions performs a BLAST search in the NCBI database with specific paramaters
+# and writes the results in a XML file.
 def blastSearch(protein_seq):
-    #record = SeqIO.read(protein_seq, format="fasta")
     results_all = NCBIWWW.qblast(
 
                                 "blastp", "nr", protein_seq,
@@ -46,7 +46,8 @@ def blastSearch(protein_seq):
 
 
 
-
+# fastaMake function parses through BLAST xml file
+# and writes the sequences obtained to a new file in Fasta format.
 def fastaMake():
     records = []
     blast_results = SearchIO.read("truncate/blast.xml", "blast-xml")
@@ -56,7 +57,8 @@ def fastaMake():
 
 
 
-
+# fastaFilter function filters the file from mutant and duplicates
+# and puts the other sequences in a new file in Fasta format.
 def fastaFilter():
     sequences = {}
     for seq_record in SeqIO.parse("truncate/unfiltered_sequences.fas", "fasta"):
@@ -76,7 +78,8 @@ def fastaFilter():
 
 
 
-
+# wholeSequence function loops through filtered sequences and submits these to NCBI Entrez
+# to obtain the whole protein. These sequence are written to a new Fasta file.
 def wholeSequences():
     t = 0
     for record in SeqIO.parse("truncate/filtered_sequences.fas", "fasta"):
@@ -104,7 +107,10 @@ def wholeSequences():
 
 
 
-
+# truncateSequences loops through the list of whole sequences and filtered sequences.
+# If the sequence is smaller then then minimum length we discard the sequence,
+# if the sequence is above the maximum length the sequence will be truncated on the C terminus and written to a new file in Fasta format.
+# If the sequence is in between the maximum and minimum length the sequence will be written to the same file as the truncated sequences.
 def truncateSequences(minim, maxim_over):
     alignment = SeqIO.parse(open("truncate/whole_sequence.fas"), "fasta")
     align_hit = SeqIO.parse("truncate/filtered_sequences.fas", "fasta")
@@ -130,4 +136,4 @@ if __name__ == "__main__":
     main()
 
 
-# In[ ]:
+
