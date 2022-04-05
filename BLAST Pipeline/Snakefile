@@ -3,7 +3,10 @@ rule all:
         "consensus_output/cleaned_consensus_msa_consensus.fasta",
         "final_msa/cleaned_truncated_msa_cleaned.fasta",
         "asr/tree.nwk",
-        "asr/asr.fas"
+        "asr/asr.fas",
+        "prot.pin",
+        "pairwise_dis.png"
+
 
 
 
@@ -152,3 +155,28 @@ rule generate_nwk_tree:
         "final_msa/final_msa.fasta.treefile"
     shell:
         "cat {input} > {output}"
+
+
+rule create_db:
+    output:
+        "prot.pin"
+    input:
+        "truncate/truncated_sequences.fas"
+    shell:
+        "makeblastdb -in {input} -dbtype prot -out prot"
+
+
+rule generate_pairwise_allignment:
+    output:
+        "pairwise/alignment.txt"
+    input:
+        "truncate/truncated_sequences.fas"
+    shell:
+        "blastp -query {input} -db prot -out {output} -outfmt 0"
+
+
+rule generate_plot:
+    output:
+        "pairwise_dis.png"
+    script:
+        "simidplot.py"
