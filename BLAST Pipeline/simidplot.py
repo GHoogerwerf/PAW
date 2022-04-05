@@ -6,18 +6,18 @@
 
 identity = []
 similarity = []
-for line in open("alignment.txt"):
+for line in open("pairwise/alignment.txt"):
     if line.startswith(" Identities"):
         identity.append(line.split(",")[0])
         similarity.append(line.split(",")[1])
-    
+
 
 
 # In[21]:
 
 
 
-    
+
 idpercent100_90 = []
 idpercent90_80 = []
 idpercent80_70 = []
@@ -57,27 +57,7 @@ for i in identity:
         idpercent100.append(i)
 
 
-# In[27]:
 
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-names = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
-values = [ len(idpercent10_0), len(idpercent20_10), len(idpercent30_20), len(idpercent40_30), len(idpercent50_40),
-          len(idpercent60_50), len(idpercent70_60), len(idpercent80_70),
-           len(idpercent90_80), len(idpercent100_90), len(idpercent100)-1234]
-
-plt.figure(figsize=(15, 3))
-
-plt.subplot(131)
-plt.bar(names, values)
-plt.subplot(132)
-plt.scatter(names, values)
-plt.subplot(133)
-plt.plot(names, values)
-plt.suptitle("Pairwise identity distribution")
-plt.show()
 
 
 # In[28]:
@@ -122,27 +102,7 @@ for i in similarity:
         sipercent100.append(i)
 
 
-# In[29]:
 
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-names = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"]
-values = [ len(sipercent10_0), len(sipercent20_10), len(sipercent30_20), len(sipercent40_30), len(sipercent50_40),
-          len(sipercent60_50), len(sipercent70_60), len(sipercent80_70),
-           len(sipercent90_80), len(sipercent100_90), len(sipercent100)-1234]
-
-plt.figure(figsize=(15, 3))
-
-plt.subplot(131)
-plt.bar(names, values)
-plt.subplot(132)
-plt.scatter(names, values)
-plt.subplot(133)
-plt.plot(names, values)
-plt.suptitle("Pairwise similarity distribution")
-plt.show()
 
 
 # In[59]:
@@ -178,11 +138,6 @@ plt.plot(names, values2, label="Similarity")
 plt.legend()
 plt.suptitle("Pairwise identity and similarity distribution")
 plt.savefig("pairwise_dis.png")
-plt.show()
 
 
 # In[ ]:
-
-
-
-
