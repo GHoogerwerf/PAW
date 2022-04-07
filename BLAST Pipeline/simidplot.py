@@ -38,7 +38,7 @@ plt.figure(figsize=(20, 5))
 idlist = [int(x) for x in idlist]
 idlist.sort()
 arr = np.array(idlist)
-b = np.hstack((arr,
+a = np.hstack((arr,
               arr))
 
 simlist = [int(x) for x in simlist]
