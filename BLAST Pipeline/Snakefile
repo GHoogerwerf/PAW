@@ -5,6 +5,7 @@ rule all:
         "asr/tree.nwk",
         "asr/asr.fas",
         "prot.pin",
+        "alignment.txt",
         "pairwise_dis.png"
 
 
@@ -168,7 +169,7 @@ rule create_db:
 
 rule generate_pairwise_allignment:
     output:
-        "pairwise/alignment.txt"
+        "alignment.txt"
     input:
         "truncate/truncated_sequences.fas"
     shell:
