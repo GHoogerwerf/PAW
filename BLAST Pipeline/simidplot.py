@@ -17,6 +17,7 @@ for line in open("alignment.txt"):
 for line in open("alignment.txt"):
     if 'sequences;' in line:
         y = int(line.split(' ')[11].replace(",", ""))
+        t = str(y)
     
 
 
@@ -55,7 +56,7 @@ b = np.hstack((arr,
 
 plt.hist(a, bins='auto', label='identity')
 plt.hist(b, bins='auto', label='similarity')
-plt.title("Pairwise identity and similarity distribution in " + y + " homologs)
+plt.title("Pairwise identity and similarity distribution in " + t + " homologs)
 plt.legend()
 plt.savefig("pairwise_dis.png")
 
