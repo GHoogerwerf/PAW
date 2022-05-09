@@ -1,3 +1,5 @@
+# rule all: provides rules being run by files that are requested
+
 rule all:
     input:
         "consensus_output/cleaned_consensus_msa_consensus.fasta",
@@ -11,6 +13,7 @@ rule all:
 
 
 
+# rule generate_sequences: runs consensus.py to generate list of BLAST results and filter these results
 
 rule generate_sequences:
     output:
@@ -21,6 +24,7 @@ rule generate_sequences:
         "consensus/consensus.py"
 
 
+# rule generate_msa: runs mafft to generate a multiple sequence alignment
 
 rule generate_msa:
     input:
