@@ -1,6 +1,8 @@
 # Protein Analysis Workflow
 ## About
-PAW or Protein Analysis Workflow is a pipeline used to automate the analysis of protein families. 
+PAW or Protein Analysis Workflow is a pipeline used to automate the analysis of protein families. The pipeline generates a list of homolog protein to the query protein, a high-quality multiple sequence alignment, a phylogenetic tree and a ancestral sequence reconstrunction of the phylogenetic tree.
+
+This pipeline was tested using a Photoactive Yellow protein(PYP) found in Halorodospira Halophila. The test resulted in the discovery of new PYP and the further aid in PYP research.
 ## Requirements
 - Python 3.0 or higher
 - biopython 1.78
