@@ -36,7 +36,7 @@ rule generate_msa:
         ginsi {input} > {output}
         '''
 
-
+# rule generate_clean_msa: runs CIAlign to clean the multiple sequence alignment and generate consenus sequence
 
 rule generate_clean_msa:
     input:
@@ -49,7 +49,8 @@ rule generate_clean_msa:
         '''
 
 
-
+# rule generate_truncated_sequences: runs truncate.py script to do another BLAST search with consensus sequence and truncate whole sequences
+        
 rule generate_truncated_sequences:
     output:
         "truncate/truncated_sequences.fas",
@@ -61,6 +62,7 @@ rule generate_truncated_sequences:
         "truncate/truncate.py"
 
 
+# rule generate_truncated_msa: runs mafft to generate a multiple sequence alignment of truncated sequences
 
 rule generate_truncated_msa:
     input:
@@ -71,7 +73,8 @@ rule generate_truncated_msa:
         "ginsi {input} > {output}"
 
 
-
+# rule generate_clean_truncated_msa: runs CIAlign to clean the multiple sequence alignment of truncated sequences
+        
 rule generate_clean_truncated_msa:
     input:
         "truncate/truncated_msa"
@@ -83,6 +86,8 @@ rule generate_clean_truncated_msa:
         '''
 
 
+# rule out_merge: adds outgroup and query sequence to multiple sequence alignment and runs mafft again to align these seuqences
+
 rule out_merge:
     input:
         "original_out.fasta",
@@ -93,6 +98,8 @@ rule out_merge:
         "cat {input[0]} {input[1]} > final_msa/new_msa.fasta | "
         "ginsi final_msa/new_msa.fasta > {output}"
 
+# rule generate_tree_asr: runs iqtree to generate a phylogenetic tree and ancestral sequence reconstruction        
+        
 rule generate_tree_asr:
     input:
         "final_msa/final_msa.fasta"
@@ -115,7 +122,7 @@ rule generate_tree_asr:
         '''
 
 
-
+#rule generate_asr_fasta: parses the output file of the ASR and creates sequence for every node in FASTA format
 
 rule generate_asr_fasta:
     input:
@@ -152,7 +159,8 @@ rule generate_asr_fasta:
                 node_n = row["Node"]
 
 
-
+# rule generate_nwk_tree: changes extension for iqtree output file to newick to make it more accesible to use
+                
 rule generate_nwk_tree:
     output:
         "asr/tree.nwk"
@@ -161,7 +169,8 @@ rule generate_nwk_tree:
     shell:
         "cat {input} > {output}"
 
-
+# rule create_db: generates a db of the truncated sequences that can be used for a local BLAST search
+        
 rule create_db:
     output:
         "prot.pin"
@@ -170,7 +179,8 @@ rule create_db:
     shell:
         "makeblastdb -in {input} -dbtype prot -out prot"
 
-
+# rule generate_pairwise_allignment: generates a pairwise score for the truncated sequences using BLAST
+        
 rule generate_pairwise_allignment:
     output:
         "alignment.txt"
@@ -179,7 +189,8 @@ rule generate_pairwise_allignment:
     shell:
         "blastp -query {input} -db prot -out {output} -outfmt 0"
 
-
+# rule generate_plot: runs simidplot.py to generate plot for pairwise identity and pairwise similarity distribution
+        
 rule generate_plot:
     output:
         "pairwise_dis.png"
