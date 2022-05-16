@@ -21,31 +21,32 @@ from Bio.Phylo.PhyloXML import Phylogeny
 
 get_ipython().run_line_magic('matplotlib', 'auto')
 
+# import phylogenetic tree
 tree = Phylo.read("tree", "newick")
 
 
 # In[22]:
 
+# get the path for the first leaf all the way to the root
 tree_path1 = tree.get_path(str(sys.argv[1]))
 nodes1 = []
 for path1 in tree_path1:
-    #print(path1)
     nodes1.append(str(path1))
     
-#print(nodes1)
 
+# get the path for the second leaf all the way to the root
 tree_path2 = tree.get_path(str(sys.argv[2]))
 nodes2 = []
 for path2 in tree_path2:
-    #print(path2)
     nodes2.append(str(path2))
     
-#print(nodes2)
+
 
 
 # In[24]:
 
 
+# print all the nodes that are common in both paths
 common_nodes = []
 for i in nodes1:
     if i in nodes2:
@@ -59,7 +60,7 @@ print(common_nodes)
 
 # In[25]:
 
-
+# print the sequences for the common nodes
 from Bio import SeqIO
 
 print("----------------------------------------------------------------------")
@@ -72,16 +73,17 @@ for record in SeqIO.parse("ASR.fasta", "fasta"):
 
 # In[11]:
 
-
+# import ASR state file as pandas dataframe
 import numpy as np
 import pandas as pd
 
 df = pd.read_csv("ASR_prediction.fas.state", sep="\t")
-#df
+
 
 
 # In[26]:
 
+# print the names of the common nodes
 print("----------------------------------------------------------------------")
 for index, row in df.iterrows():
     if row["Node"] in common_nodes:
