@@ -7,8 +7,11 @@
 import numpy as np
 import pandas as pd
 
+# variable df is the dataframe fro the ASR file obtained from IQtree
 df = pd.read_table("final_msa/final_msa.fasta.state")
 
+# loop writes sequences obtained from the dataframe in FASTA format
+# every node in this dataframe is a sequence and the amino acids for every position get added to the node
 with open("asr/asr.fas", "w") as out:
     node_n = ""
     state_n = ""
