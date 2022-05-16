@@ -1,4 +1,6 @@
 # Protein Analysis Workflow
+## About
+PAW or Protein Analysis Workflow is a pipeline used to automate the analysis of protein families. 
 ## Requirements
 - Python 3.0 or higher
 - biopython 1.78
@@ -63,5 +65,9 @@ This will generate multiple files and plots that can be used to analyse a protei
 There are also some usefull scripts added that can help with the results. One of these is the position_plot.py script. this script will give the amino acid composition for a certain position in a MSA.
 To run the script type the following command and change the argument to the right position and files.
 ```
-ipython position_plot.py [the position you want to see in alignment] [the msa file] ["name of the file you want to use for image".png] 
+ipython position_plot.py "the position you want to see in alignment" "the msa file" "name of the file you want to use for image.png"
+```
+One other usefull script is the asr_tree.py. This script will show you all the common nodes and thus ancestors between two leaves. Make sure the asr fasta file, asr prediction file and the tree file are in the same folder. to un the script enter the following command and change the arguments to the names of the leaves.
+```
+ipython asr_tree.py "name of the first leaf" "name of the second leaf"
 ```
