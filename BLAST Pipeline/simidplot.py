@@ -7,6 +7,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# for loop puts all the similarity and identity scores in lists
+
 identity = []
 similarity = []
 for line in open("alignment.txt"):
@@ -37,7 +39,8 @@ for i in identity:
 
 
 # In[36]:
-
+# generating two plots one for identiy and one for similarity
+# putting these plots together on one histogram and saving this histogram as a file
 
 plt.figure(figsize=(20, 5))
 idlist = [int(x) for x in idlist]
