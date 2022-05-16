@@ -56,7 +56,7 @@ $ conda activate snakemake
 ```
 After this we can run the pipeline 
 ```
-$ snakemake -s Snakefile -cores ["amount of cores you wan to use]
+$ snakemake -s Snakefile -cores ["amount of cores you want to use]
 ```
 This will generate multiple files and plots that can be used to analyse a protein family 
 
