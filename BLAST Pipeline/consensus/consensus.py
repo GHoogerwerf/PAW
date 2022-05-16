@@ -14,22 +14,20 @@ from collections import Counter
 import time
 import sys
 
-
+# Main function creates input variables for other functions.
+# These variables include simgle protein sequence files in fasta format 
+# and the maximum and minimum amount of characters a sequence can have.
 def main():
-    #get_ipython().run_line_magic('matplotlib', 'auto')
     record = SeqIO.read("protein.fasta", format="fasta")
-    #print(record.seq)
-    #minim = int(sys.argv[1])
-    #maxim = int(sys.argv[2])
     blastSearch(record.seq)
     fastaMake()
     fastaFilter()
-    #wholeSequences()
-    #truncateSequences()
+ 
 
 
 
-
+# blastSearch functions performs a BLAST search in the NCBI database with specific paramaters
+# and writes the results in a XML file.
 def blastSearch(protein_seq):
     results_all = NCBIWWW.qblast(
 
@@ -44,7 +42,8 @@ def blastSearch(protein_seq):
 
 
 
-
+# fastaMake function parses through BLAST xml file
+# and writes the sequences obtained to a new file in Fasta format.
 def fastaMake():
     records = []
     blast_results = SearchIO.read("consensus_blast/blast.xml", "blast-xml")
@@ -54,7 +53,8 @@ def fastaMake():
 
 
 
-
+# fastaFilter function filters the file from mutant and duplicates
+# and puts the other sequences in a new file in Fasta format.
 def fastaFilter():
     sequences = {}
     for seq_record in SeqIO.parse("consensus_blast/unfiltered_sequences.fas", "fasta"):
