@@ -2,7 +2,7 @@
 ## About
 PAW or Protein Analysis Workflow is a pipeline used to automate the analysis of protein families. The pipeline generates a list of homolog protein to the query protein, a high-quality multiple sequence alignment, a phylogenetic tree and a ancestral sequence reconstrunction of the phylogenetic tree.
 
-This pipeline was tested using a Photoactive Yellow protein(PYP) found in Halorodospira Halophila. The test resulted in the discovery of new PYP and the further aid in PYP research.
+This pipeline was tested using a Photoactive Yellow protein(PYP) found in Halorodospira Halophila. The test resulted in the discovery of new PYP's and the further aid in PYP research.
 ## Requirements
 - Python 3.0 or higher
 - biopython 1.78
@@ -12,17 +12,17 @@ This pipeline was tested using a Photoactive Yellow protein(PYP) found in Haloro
 ## Installation
 #### Snakemake
 ```
-$ conda activate base
-$ mamba create -c conda-forge -c bioconda -n snakemake snakemake
+conda activate base
+mamba create -c conda-forge -c bioconda -n snakemake snakemake
 ```
 To activate and test Snakemake:
 ```
-$ conda activate snakemake
-$ snakemake --help
+conda activate snakemake
+snakemake --help
 ```
 #### MAFFT
 ```
-$ sudo apt install mafft
+sudo apt install mafft
 ```
 To install using conda:
 ```
@@ -30,23 +30,23 @@ conda install -c bioconda mafft
 ```
 #### CIAlign
 ```
-$ pip3 install cialign
+pip3 install cialign
 ```
 To install using conda:
 ```
-$ conda install -c bioconda cialign
+conda install -c bioconda cialign
 ```
 #### IQ-TREE
 ```
-$ sudo apt-get install iqtree
+sudo apt-get install iqtree
 ```
 To install using conda:
 ```
-$ conda install -c bioconda iqtree
+conda install -c bioconda iqtree
 ```
 #### BLAST
 ```
-$ sudo apt-get install ncbi-blast+
+sudo apt-get install ncbi-blast+
 ```
 ## Usage
 
@@ -56,11 +56,11 @@ First to peform a protein analysis of your own query protein, alter the protein.
 
 After doing this we can run the pipeline. First we have to activate Snakemake.
 ```
-$ conda activate snakemake
+conda activate snakemake
 ```
 After this we can run the pipeline 
 ```
-$ snakemake -s Snakefile -cores ["amount of cores you want to use]
+snakemake -s Snakefile -cores "amount of cores you want to use"
 ```
 This will generate multiple files and plots that can be used to analyse a protein family 
 
