@@ -69,7 +69,7 @@ To run the script type the following command and change the argument to the righ
 ```
 ipython position_plot.py "the position you want to see in alignment" "the msa file" "name of the file you want to use for image.png"
 ```
-One other usefull script is the asr_tree.py. This script will show you all the common nodes and thus ancestors between two leaves. Make sure the asr fasta file, asr prediction file and the tree file are in the same folder. to un the script enter the following command and change the arguments to the names of the leaves.
+One other usefull script is the asr_tree.py. This script will show you all the common nodes and thus ancestors between two leaves. Make sure the asr fasta file, asr prediction file and the tree file are in the same folder. to run the script enter the following command and change the arguments to the names of the leaves of interest.
 ```
 ipython asr_tree.py "name of the first leaf" "name of the second leaf"
 ```
