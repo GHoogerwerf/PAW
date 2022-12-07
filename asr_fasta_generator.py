@@ -10,7 +10,7 @@ with open("_________name of output file__________", "w") as out:
         if row["Node"] != node_n:
             out.write("\n" + ">" + row["Node"] + "\n")
             if row["State"] != "-":
-            out.write(row["State"])
+                out.write(row["State"])
             else:
                 next
             node = row["Node"]
